@@ -43,6 +43,7 @@ public class CiudadanoController {
         return ciudadanoService.obtenerDenuncia(value.getCiudadanoId(), value.getDenunciaId());
     }
 
+    //PRUEBA
     // PUT - Actualizar completamente una denuncia existente
     @PutMapping()
     public Denuncia actualizarDenuncia (@RequestBody Denuncia denuncia){
