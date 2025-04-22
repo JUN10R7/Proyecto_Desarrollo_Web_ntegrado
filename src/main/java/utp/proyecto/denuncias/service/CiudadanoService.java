@@ -4,17 +4,20 @@ import org.springframework.stereotype.Service;
 import utp.proyecto.denuncias.model.Ciudadano;
 import utp.proyecto.denuncias.model.Denuncia;
 import utp.proyecto.denuncias.repository.CiudadanoRepository;
-import utp.proyecto.denuncias.request.CiudadanoRequest;
+import utp.proyecto.denuncias.repository.DenunciaRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class CiudadanoService {
 
     private final CiudadanoRepository ciudadanoRepository;
+    private final DenunciaRepository denunciaRepository;
 
-    public CiudadanoService(CiudadanoRepository ciudadanoRepository) {
+    public CiudadanoService(CiudadanoRepository ciudadanoRepository, DenunciaRepository denunciaRepository) {
         this.ciudadanoRepository = ciudadanoRepository;
+        this.denunciaRepository = denunciaRepository;
     }
 
     public Ciudadano registrarCiudadano(Ciudadano ciudadano) {
@@ -23,31 +26,37 @@ public class CiudadanoService {
     }
 
     public Denuncia registrar(Denuncia denuncia) {
-        ciudadanoRepository.buscar(denuncia.getCiudadano()).nuevaDenuncia(denuncia);
-        return denuncia;
+        Ciudadano ciudadano = ciudadanoRepository.buscar(denuncia.getCiudadano());
+        if (ciudadano == null) {
+            throw new IllegalArgumentException("El ciudadano con ID " + denuncia.getCiudadano() + " no existe.");
+        }
+        return denunciaRepository.nuevaDenuncia(denuncia);
     }
 
-    public List<Denuncia> consulta (Long ciudadano) {
-        return ciudadanoRepository.buscar(ciudadano).getDenuncias();
-    }
 
-    public List<Ciudadano> obtenerCiudadanos (Long id) {
+    public List<Ciudadano> obtenerCiudadanos () {
         return ciudadanoRepository.listarCiudadanos();
     }
 
-    public List<Denuncia> obtenerDenuncias(Long id) {
-        return ciudadanoRepository.buscar(id).getDenuncias();
+    public List<Denuncia> obtenerDenuncias () {
+        return denunciaRepository.listarDenuncias();
     }
 
-    public Denuncia obtenerDenuncia(Long ciudadano, Long denuncia) {
-        return ciudadanoRepository.buscar(ciudadano).buscarDenuncia(denuncia);
+    public List<Denuncia> obtenerDenuncias(Long id) {
+        return denunciaRepository.listarDenuncias()
+                .stream()
+                .filter(d -> id.equals(d.getCiudadano()))
+                .toList();
+    }
 
+    public Denuncia obtenerDenuncia(Long denuncia) {
+        return denunciaRepository.buscar(denuncia);
     }
     public Denuncia actualizarDenuncia (Denuncia denuncia) {
-        return ciudadanoRepository.buscar(denuncia.getCiudadano()).updateDenuncia(denuncia);
+        return denunciaRepository.actualizarDenuncia(denuncia);
     }
 
-    public void eliminarDenuncia(Long ciudadano, Long denuncia) {
-        ciudadanoRepository.buscar(ciudadano).eliminarDenuncia(denuncia);
+    public void eliminarDenuncia(Long denuncia) {
+        denunciaRepository.eliminarDenuncia(denuncia);
     }
 }

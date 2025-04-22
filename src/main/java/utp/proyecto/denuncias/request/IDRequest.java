@@ -1,8 +1,8 @@
 package utp.proyecto.denuncias.request;
 
-public class CiudadanoRequest {
+public class IDRequest {
     private Long id;
-    public CiudadanoRequest(Long id) {}
+    public IDRequest(Long id) {}
     public Long getId() {
         return id;
     }

@@ -3,7 +3,7 @@ package utp.proyecto.denuncias.controller;
 import org.springframework.web.bind.annotation.*;
 import utp.proyecto.denuncias.model.Ciudadano;
 import utp.proyecto.denuncias.model.Denuncia;
-import utp.proyecto.denuncias.request.CiudadanoRequest;
+import utp.proyecto.denuncias.request.IDRequest;
 import utp.proyecto.denuncias.request.ObtenerDenunciaRequest;
 import utp.proyecto.denuncias.service.CiudadanoService;
 
@@ -31,29 +31,35 @@ public class CiudadanoController {
         return ciudadanoService.registrar(denuncia);
     }
 
+    // GET - Obtener usuarios:
+    @GetMapping("/listarUsuarios")
+    public List<Ciudadano> listarUsuarios() {
+        return ciudadanoService.obtenerCiudadanos();
+    }
+
     // GET - Obtener todas las denuncias:
     @GetMapping("/obtenerDenuncias")
-    public List<Denuncia> obtenerDenuncias(@RequestBody CiudadanoRequest c) {
-        return ciudadanoService.obtenerDenuncias(c.getId());
+    public List<Denuncia> obtenerDenuncias(@RequestParam Long id) {
+        return ciudadanoService.obtenerDenuncias(id);
     }
 
     // GET - Obtener una denuncia por ID
     @GetMapping("/obtenerDenuncia")
-    public Denuncia obtenerDenunciaPorId (@RequestBody ObtenerDenunciaRequest value){
-        return ciudadanoService.obtenerDenuncia(value.getCiudadanoId(), value.getDenunciaId());
+    public Denuncia obtenerDenunciaPorId (@RequestParam Long id){
+        return ciudadanoService.obtenerDenuncia(id);
     }
 
     //PRUEBA
     // PUT - Actualizar completamente una denuncia existente
-    @PutMapping()
+    @PutMapping("/update")
     public Denuncia actualizarDenuncia (@RequestBody Denuncia denuncia){
         return ciudadanoService.actualizarDenuncia(denuncia);
     }
 
     // DELETE - Eliminar una denuncia por ID
-    @DeleteMapping()
-    public List<Denuncia> eliminarDenuncia (@RequestBody ObtenerDenunciaRequest eliminar){
-        ciudadanoService.eliminarDenuncia(eliminar.getCiudadanoId(), eliminar.getDenunciaId());
-        return ciudadanoService.obtenerDenuncias(eliminar.getCiudadanoId());
+    @DeleteMapping("/delete")
+    public List<Denuncia> eliminarDenuncia (@RequestBody IDRequest eliminar){
+        ciudadanoService.eliminarDenuncia(eliminar.getId());
+        return ciudadanoService.obtenerDenuncias();
     }
 }
